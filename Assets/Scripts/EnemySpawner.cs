@@ -1,5 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 [DisallowMultipleComponent]
 public sealed class EnemySpawner : MonoBehaviour
@@ -11,53 +14,39 @@ public sealed class EnemySpawner : MonoBehaviour
     [SerializeField] private Transform lookAtCenter = null;
 
     [Header("Pool")]
-    [SerializeField] private int initialPoolSize = 4;
-    [SerializeField] private int maxPoolSize = 8;
+    [SerializeField] private int initialPoolSize = 10;
+    [SerializeField] private int maxPoolSize = 10;
+    [SerializeField] private int maxAliveCount = 10;
 
     [Header("Spawn")]
-    [SerializeField] private float spawnIntervalSeconds = 1f;
     [SerializeField] private float enemyMoveSpeedUnitsPerSecond = 5f;
     [SerializeField] private float enemyLifeTimeSeconds = 10f;
 
     private readonly List<AliveEnemy> aliveEnemies = new List<AliveEnemy>(32);
     private GameObjectPool enemyPool;
-    private float nextSpawnTimeSeconds;
 
     private void Awake()
     {
         enemyPool = new GameObjectPool(enemyPrefab, enemyPoolRoot, initialPoolSize, maxPoolSize);
     }
 
-    private void Start()
-    {
-        for (int spawnIndex = 0; spawnIndex < initialPoolSize; spawnIndex++)
-        {
-            if (!TrySpawnOneEnemy())
-            {
-                break;
-            }
-        }
-
-        nextSpawnTimeSeconds = Time.time + spawnIntervalSeconds;
-    }
-
     private void Update()
     {
         ReleaseExpiredEnemies();
 
-        if (Time.time < nextSpawnTimeSeconds || aliveEnemies.Count >= maxPoolSize)
+        if (WasSpawnRequested())
         {
-            return;
-        }
-
-        if (TrySpawnOneEnemy())
-        {
-            nextSpawnTimeSeconds = Time.time + spawnIntervalSeconds;
+            TrySpawnOneEnemy();
         }
     }
 
     private bool TrySpawnOneEnemy()
     {
+        if (aliveEnemies.Count >= maxAliveCount)
+        {
+            return false;
+        }
+
         if (enemyPool == null || enemyPrefab == null || spawnPoints == null || spawnPoints.Length == 0)
         {
             return false;
@@ -82,6 +71,23 @@ public sealed class EnemySpawner : MonoBehaviour
 
         aliveEnemies.Add(new AliveEnemy(enemy, Time.time + enemyLifeTimeSeconds));
         return true;
+    }
+
+    private static bool WasSpawnRequested()
+    {
+#if ENABLE_INPUT_SYSTEM
+        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            return true;
+        }
+#endif
+#if ENABLE_LEGACY_INPUT_MANAGER
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            return true;
+        }
+#endif
+        return false;
     }
 
     private Quaternion GetSpawnRotation(Transform spawnPoint)
@@ -165,13 +171,18 @@ public sealed class EnemySpawner : MonoBehaviour
     {
         initialPoolSize = Mathf.Max(0, initialPoolSize);
         maxPoolSize = Mathf.Max(1, maxPoolSize);
+        maxAliveCount = Mathf.Clamp(maxAliveCount, 1, 10);
 
-        if (maxPoolSize < initialPoolSize)
+        if (maxPoolSize < maxAliveCount)
         {
-            maxPoolSize = initialPoolSize;
+            maxPoolSize = maxAliveCount;
         }
 
-        spawnIntervalSeconds = Mathf.Max(0.1f, spawnIntervalSeconds);
+        if (initialPoolSize < maxAliveCount)
+        {
+            initialPoolSize = maxAliveCount;
+        }
+
         enemyMoveSpeedUnitsPerSecond = Mathf.Max(0.1f, enemyMoveSpeedUnitsPerSecond);
         enemyLifeTimeSeconds = Mathf.Max(0.1f, enemyLifeTimeSeconds);
     }
