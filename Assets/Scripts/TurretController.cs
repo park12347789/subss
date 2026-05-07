@@ -9,6 +9,11 @@ public sealed class TurretController : MonoBehaviour
     [SerializeField] private Transform muzzlePoint = null;
     [SerializeField] private GameObject projectilePrefab = null;
 
+    [Header("Pooling")]
+    [SerializeField] private Transform projectilePoolRoot = null;
+    [SerializeField] private int initialPoolSize = 12;
+    [SerializeField] private int maxPoolSize = 32;
+
     [Header("Rotation")]
     [SerializeField] private float yawSpeed = 120f;
     [SerializeField] private float pitchSpeed = 90f;
@@ -22,10 +27,12 @@ public sealed class TurretController : MonoBehaviour
     [SerializeField] private float projectileLifeTime = 3f;
 
     private float fireTimer;
+    private GameObjectPool projectilePool;
 
     private void Awake()
     {
         fireTimer = fireInterval;
+        projectilePool = new GameObjectPool(projectilePrefab, projectilePoolRoot, initialPoolSize, maxPoolSize);
     }
 
     private void Update()
@@ -90,12 +97,36 @@ public sealed class TurretController : MonoBehaviour
 
     private void FireProjectile()
     {
-        GameObject projectile = Instantiate(projectilePrefab, muzzlePoint.position, muzzlePoint.rotation);
-        projectile.SetActive(true);
+        GameObject projectile = projectilePool.Get(muzzlePoint.position, muzzlePoint.rotation);
+        if (projectile == null)
+        {
+            return;
+        }
 
         if (projectile.TryGetComponent(out ProjectileMover mover))
         {
-            mover.Initialize(projectileSpeed, projectileLifeTime);
+            mover.Initialize(projectileSpeed, projectileLifeTime, ReleaseProjectile);
+        }
+    }
+
+    private void ReleaseProjectile(ProjectileMover mover)
+    {
+        if (mover == null || projectilePool == null)
+        {
+            return;
+        }
+
+        projectilePool.Release(mover.gameObject);
+    }
+
+    private void OnValidate()
+    {
+        initialPoolSize = Mathf.Max(0, initialPoolSize);
+        maxPoolSize = Mathf.Max(1, maxPoolSize);
+
+        if (maxPoolSize < initialPoolSize)
+        {
+            maxPoolSize = initialPoolSize;
         }
     }
 }
