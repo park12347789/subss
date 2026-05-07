@@ -42,18 +42,17 @@ public sealed class EnemySpawner : MonoBehaviour
 
     private bool TrySpawnOneEnemy()
     {
+        if (!TryGetSpawnPoint(out Transform spawnPoint))
+        {
+            return false;
+        }
+
         if (aliveEnemies.Count >= maxAliveCount)
         {
-            return false;
+            ReleaseOldestEnemy();
         }
 
-        if (enemyPool == null || enemyPrefab == null || spawnPoints == null || spawnPoints.Length == 0)
-        {
-            return false;
-        }
-
-        Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-        if (spawnPoint == null)
+        if (aliveEnemies.Count >= maxAliveCount)
         {
             return false;
         }
@@ -71,6 +70,29 @@ public sealed class EnemySpawner : MonoBehaviour
 
         aliveEnemies.Add(new AliveEnemy(enemy, Time.time + enemyLifeTimeSeconds));
         return true;
+    }
+
+    private bool TryGetSpawnPoint(out Transform spawnPoint)
+    {
+        spawnPoint = null;
+
+        if (enemyPool == null || enemyPrefab == null || spawnPoints == null || spawnPoints.Length == 0)
+        {
+            return false;
+        }
+
+        int startIndex = Random.Range(0, spawnPoints.Length);
+        for (int offset = 0; offset < spawnPoints.Length; offset++)
+        {
+            Transform candidate = spawnPoints[(startIndex + offset) % spawnPoints.Length];
+            if (candidate != null)
+            {
+                spawnPoint = candidate;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static bool WasSpawnRequested()
@@ -130,6 +152,30 @@ public sealed class EnemySpawner : MonoBehaviour
         }
 
         enemy.SetActive(false);
+    }
+
+    private bool ReleaseOldestEnemy()
+    {
+        while (aliveEnemies.Count > 0)
+        {
+            GameObject oldestEnemy = aliveEnemies[0].Instance;
+            aliveEnemies.RemoveAt(0);
+
+            if (oldestEnemy == null)
+            {
+                continue;
+            }
+
+            if (enemyPool != null && enemyPool.Release(oldestEnemy))
+            {
+                return true;
+            }
+
+            oldestEnemy.SetActive(false);
+            return true;
+        }
+
+        return false;
     }
 
     private void ReleaseExpiredEnemies()
