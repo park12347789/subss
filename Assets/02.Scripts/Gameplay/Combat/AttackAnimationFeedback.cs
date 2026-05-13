@@ -5,6 +5,12 @@ namespace SystemicOverload.Combat
     [DefaultExecutionOrder(100)]
     public sealed class AttackAnimationFeedback : MonoBehaviour, IAttackFeedback
     {
+        private const string RangedTriggerName = "AttackRangedTrig";
+        private const string MeleeTriggerName = "AttackMeleeTrig";
+        private const string MagicTriggerName = "AttackMagicTrig";
+        private const string AreaTriggerName = "AttackAreaTrig";
+
+        [SerializeField] private Animator animator;
         [SerializeField] private Transform animatedRoot;
         [SerializeField] private Vector3 rangedEulerOffset = new Vector3(-4.0f, 0.0f, 0.0f);
         [SerializeField] private Vector3 meleeEulerOffset = new Vector3(-10.0f, 0.0f, 0.0f);
@@ -23,6 +29,7 @@ namespace SystemicOverload.Combat
 
         private void Awake()
         {
+            animator ??= GetComponent<Animator>();
             ResolveAnimatedRoot();
             CaptureBasePose();
         }
@@ -35,11 +42,48 @@ namespace SystemicOverload.Combat
 
         public void PlayAttackFeedback(AttackFeedbackKind feedbackKind)
         {
+            if (TrySetAnimatorTrigger(feedbackKind))
+            {
+                return;
+            }
+
             ResolveAnimatedRoot();
             CaptureBasePose();
 
             activeEulerOffset = ResolveEulerOffset(feedbackKind);
             feedbackTimer = TotalDuration;
+        }
+
+        private bool TrySetAnimatorTrigger(AttackFeedbackKind feedbackKind)
+        {
+            if (animator == null)
+            {
+                return false;
+            }
+
+            string triggerName = ResolveTriggerName(feedbackKind);
+            for (int index = 0; index < animator.parameters.Length; index++)
+            {
+                AnimatorControllerParameter parameter = animator.parameters[index];
+                if (parameter.type == AnimatorControllerParameterType.Trigger && parameter.name == triggerName)
+                {
+                    animator.SetTrigger(triggerName);
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private string ResolveTriggerName(AttackFeedbackKind feedbackKind)
+        {
+            return feedbackKind switch
+            {
+                AttackFeedbackKind.Melee => MeleeTriggerName,
+                AttackFeedbackKind.Magic => MagicTriggerName,
+                AttackFeedbackKind.Area => AreaTriggerName,
+                _ => RangedTriggerName
+            };
         }
 
         private void LateUpdate()

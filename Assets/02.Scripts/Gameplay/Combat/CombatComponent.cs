@@ -67,8 +67,14 @@ namespace SystemicOverload.Combat
             nextAllowedShotTime = Time.time + interval;
 
             TryFireHitScan();
-            attackFeedback?.PlayAttackFeedback(AttackFeedbackKind.Ranged);
-            TrySetAttackTrigger();
+            if (attackFeedback != null)
+            {
+                attackFeedback.PlayAttackFeedback(AttackFeedbackKind.Ranged);
+            }
+            else
+            {
+                TrySetAttackTrigger();
+            }
         }
 
         /// <summary>

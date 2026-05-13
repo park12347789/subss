@@ -1178,7 +1178,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84be8e731c8e4474b9a2e2346d4a2180, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SystemicOverload.Combat.AttackAnimationFeedback
-  animatedRoot: {fileID: 0}
+  animator: {fileID: 1632473491}
+  animatedRoot: {fileID: 1672761688}
   rangedEulerOffset: {x: -4, y: 0, z: 0}
   meleeEulerOffset: {x: -10, y: 0, z: 0}
   magicEulerOffset: {x: -3, y: 8, z: 0}
@@ -1186,6 +1187,16 @@ MonoBehaviour:
   scaleOffset: {x: 1.04, y: 1, z: 0.96}
   attackInTime: 0.06
   attackOutTime: 0.14
+--- !u!95 &1632473491 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 6469296627373190699, guid: ce2863cea4501e84c80b28674cac30f0, type: 3}
+  m_PrefabInstance: {fileID: 2728405397703805328}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1672761688 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 262086421950245026, guid: ce2863cea4501e84c80b28674cac30f0, type: 3}
+  m_PrefabInstance: {fileID: 2728405397703805328}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1912275894
 GameObject:
   m_ObjectHideFlags: 0

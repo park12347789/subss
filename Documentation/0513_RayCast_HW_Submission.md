@@ -30,7 +30,10 @@
 
 - Animation
   - Existing player prefab keeps the Starter Assets locomotion animator.
-  - `AttackAnimationFeedback` adds a short visual attack pulse for ranged, melee, magic, and AOE actions.
+  - Added authored attack clips under `Assets/01.Scenes/Raycast/Animations/Attacks`.
+  - `StarterAssetsThirdPerson.controller` now has an `Attack Motion` overlay layer with trigger-driven attack states.
+  - Attack triggers are split by action: `AttackRangedTrig`, `AttackMeleeTrig`, `AttackMagicTrig`, and `AttackAreaTrig`.
+  - `AttackAnimationFeedback` now drives Animator triggers first and only falls back to the old transform pulse if the controller lacks the trigger.
   - `IAttackFeedback` keeps attack feedback decoupled from the damage components.
 
 ## Structure Check
@@ -38,6 +41,7 @@
 - Interface scripts start with `I`: `IInteractable`, `IDamageable`, `IAttackFeedback`.
 - Interaction, combat, movement, and raycast scripts are separated by folder and responsibility.
 - Scene wiring is authored in `Raycast.unity`: player, interaction targets, three enemy dummies, attack point, camera references, and layer masks.
+- `AttackAnimationFeedback` is wired to the scene `PlayerArmature` Animator and `PlayerArmature/Geometry` animated root.
 - `PlayerArmature` is on the `Player` layer, enemy dummies are on `Enemy`, NPC/chest are on `Interactable`, wall targets are on `Obstacle`, and the floor is on `Ground`.
 - `ThirdPersonController.GroundLayers` includes both `Default` and `Ground` to preserve TPS movement after the floor layer cleanup.
 
