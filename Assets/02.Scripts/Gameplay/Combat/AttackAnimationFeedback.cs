@@ -10,7 +10,16 @@ namespace SystemicOverload.Combat
         private const string MagicTriggerName = "AttackMagicTrig";
         private const string AreaTriggerName = "AttackAreaTrig";
 
+        [Header("Clip Motion")]
+        [SerializeField] private AnimationClip rangedClip;
+        [SerializeField] private AnimationClip meleeClip;
+        [SerializeField] private AnimationClip magicClip;
+        [SerializeField] private AnimationClip areaClip;
+
+        [Header("Animator Fallback")]
         [SerializeField] private Animator animator;
+
+        [Header("Transform Fallback")]
         [SerializeField] private Transform animatedRoot;
         [SerializeField] private Vector3 rangedEulerOffset = new Vector3(-4.0f, 0.0f, 0.0f);
         [SerializeField] private Vector3 meleeEulerOffset = new Vector3(-10.0f, 0.0f, 0.0f);
@@ -24,6 +33,8 @@ namespace SystemicOverload.Combat
         private Vector3 baseScale;
         private Vector3 activeEulerOffset;
         private float feedbackTimer;
+        private AnimationClip activeClip;
+        private float activeClipTime;
 
         private float TotalDuration => attackInTime + attackOutTime;
 
@@ -42,6 +53,11 @@ namespace SystemicOverload.Combat
 
         public void PlayAttackFeedback(AttackFeedbackKind feedbackKind)
         {
+            if (TryPlayClip(feedbackKind))
+            {
+                return;
+            }
+
             if (TrySetAnimatorTrigger(feedbackKind))
             {
                 return;
@@ -52,6 +68,20 @@ namespace SystemicOverload.Combat
 
             activeEulerOffset = ResolveEulerOffset(feedbackKind);
             feedbackTimer = TotalDuration;
+        }
+
+        private bool TryPlayClip(AttackFeedbackKind feedbackKind)
+        {
+            AnimationClip clip = ResolveClip(feedbackKind);
+            if (clip == null)
+            {
+                return false;
+            }
+
+            activeClip = clip;
+            activeClipTime = 0.0f;
+            activeClip.SampleAnimation(gameObject, 0.0f);
+            return true;
         }
 
         private bool TrySetAnimatorTrigger(AttackFeedbackKind feedbackKind)
@@ -75,6 +105,17 @@ namespace SystemicOverload.Combat
             return false;
         }
 
+        private AnimationClip ResolveClip(AttackFeedbackKind feedbackKind)
+        {
+            return feedbackKind switch
+            {
+                AttackFeedbackKind.Melee => meleeClip,
+                AttackFeedbackKind.Magic => magicClip,
+                AttackFeedbackKind.Area => areaClip,
+                _ => rangedClip
+            };
+        }
+
         private string ResolveTriggerName(AttackFeedbackKind feedbackKind)
         {
             return feedbackKind switch
@@ -88,6 +129,18 @@ namespace SystemicOverload.Combat
 
         private void LateUpdate()
         {
+            if (activeClip != null)
+            {
+                activeClipTime += Time.deltaTime;
+                activeClip.SampleAnimation(gameObject, Mathf.Min(activeClipTime, activeClip.length));
+                if (activeClipTime >= activeClip.length)
+                {
+                    activeClip = null;
+                }
+
+                return;
+            }
+
             if (animatedRoot == null || feedbackTimer <= 0.0f)
             {
                 return;
@@ -112,6 +165,7 @@ namespace SystemicOverload.Combat
 
         private void OnDisable()
         {
+            activeClip = null;
             ResetPose();
         }
 
