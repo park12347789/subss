@@ -1073,6 +1073,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f36d39c139ce19347864389dcd15ff29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SystemicOverload.Combat.TpsMagicSphereCastComponent
+  projectilePrefab: {fileID: 6678046827200461928, guid: 819333d6d8536a54b87c340e9ba05a6a, type: 3}
+  projectileSpawnPoint: {fileID: 1553122659}
+  projectileSpeed: 18
+  projectileLifetime: 2
   aimCamera: {fileID: 133881454}
   range: 30
   radius: 0.35

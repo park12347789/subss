@@ -4,17 +4,28 @@ using UnityEngine;
 namespace SystemicOverload.Combat
 {
     /// <summary>
-    /// 카메라 중앙 SphereCast로 두께가 있는 투사 판정을 수행합니다.
+    /// Fires a visible round magic projectile toward the camera-center aim point.
     /// </summary>
     [RequireComponent(typeof(InputProvider))]
     public sealed class TpsMagicSphereCastComponent : MonoBehaviour
     {
+        [Header("Projectile")]
+        [SerializeField] private GameObject projectilePrefab;
+        [SerializeField] private Transform projectileSpawnPoint;
+        [SerializeField] private float projectileSpeed = 18.0f;
+        [SerializeField] private float projectileLifetime = 2.0f;
+
+        [Header("Aim")]
         [SerializeField] private Camera aimCamera;
         [SerializeField] private float range = 30.0f;
         [SerializeField] private float radius = 0.35f;
+
+        [Header("Damage")]
         [SerializeField] private float damage = 20.0f;
         [SerializeField] private float cooldown = 0.25f;
         [SerializeField] private LayerMask hitMask = ~0;
+
+        [Header("Feedback")]
         [SerializeField] private GameObject hitFxPrefab;
         [SerializeField] private bool drawGizmo = true;
 
@@ -42,6 +53,8 @@ namespace SystemicOverload.Combat
             radius = Mathf.Max(0.01f, radius);
             damage = Mathf.Max(0.0f, damage);
             cooldown = Mathf.Max(0.0f, cooldown);
+            projectileSpeed = Mathf.Max(0.1f, projectileSpeed);
+            projectileLifetime = Mathf.Max(0.05f, projectileLifetime);
         }
 
         private void Update()
@@ -73,20 +86,83 @@ namespace SystemicOverload.Combat
             }
 
             Ray centerRay = aimCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-            if (!TrySphereCastExcludeSelf(centerRay, out RaycastHit hitInfo))
+            Vector3 aimPoint = ResolveAimPoint(centerRay, out float aimDistance);
+            Vector3 spawnPosition = ResolveProjectileOrigin();
+            Vector3 launchDirection = aimPoint - spawnPosition;
+            if (launchDirection.sqrMagnitude < 0.0001f)
             {
-                lastCastOrigin = centerRay.origin;
-                lastCastDirection = centerRay.direction;
-                lastCastDistance = range;
-                hasLastCast = true;
+                launchDirection = centerRay.direction;
+            }
+
+            lastCastOrigin = spawnPosition;
+            lastCastDirection = launchDirection.normalized;
+            lastCastDistance = Mathf.Min(range, Mathf.Max(aimDistance, launchDirection.magnitude));
+            hasLastCast = true;
+
+            if (projectilePrefab == null)
+            {
+                ApplyInstantSphereCast(centerRay);
                 return;
             }
 
-            Debug.DrawRay(centerRay.origin, centerRay.direction * hitInfo.distance, Color.cyan, 0.5f);
-            lastCastOrigin = centerRay.origin;
-            lastCastDirection = centerRay.direction;
-            lastCastDistance = hitInfo.distance;
-            hasLastCast = true;
+            GameObject projectileObject = Instantiate(
+                projectilePrefab,
+                spawnPosition,
+                Quaternion.LookRotation(launchDirection.normalized, Vector3.up));
+            MagicProjectileComponent projectile = projectileObject.GetComponent<MagicProjectileComponent>();
+            if (projectile == null)
+            {
+                Debug.LogWarning("Magic projectile prefab is missing MagicProjectileComponent.", projectileObject);
+                Destroy(projectileObject);
+                ApplyInstantSphereCast(centerRay);
+                return;
+            }
+
+            projectile.Launch(
+                transform,
+                spawnPosition,
+                launchDirection,
+                damage,
+                projectileSpeed,
+                radius,
+                projectileLifetime,
+                hitMask,
+                hitFxPrefab);
+
+            if (drawGizmo)
+            {
+                Debug.DrawRay(spawnPosition, launchDirection.normalized * Mathf.Min(range, launchDirection.magnitude), Color.cyan, 0.5f);
+            }
+        }
+
+        private Vector3 ResolveAimPoint(Ray centerRay, out float aimDistance)
+        {
+            if (TrySphereCastExcludeSelf(centerRay, out RaycastHit hitInfo))
+            {
+                aimDistance = hitInfo.distance;
+                return hitInfo.point;
+            }
+
+            aimDistance = range;
+            return centerRay.origin + centerRay.direction * range;
+        }
+
+        private Vector3 ResolveProjectileOrigin()
+        {
+            if (projectileSpawnPoint != null)
+            {
+                return projectileSpawnPoint.position;
+            }
+
+            return transform.position + Vector3.up * 1.0f + transform.forward * 1.2f;
+        }
+
+        private void ApplyInstantSphereCast(Ray centerRay)
+        {
+            if (!TrySphereCastExcludeSelf(centerRay, out RaycastHit hitInfo))
+            {
+                return;
+            }
 
             IDamageable targetDamageable = hitInfo.collider.GetComponentInParent<IDamageable>();
             if (targetDamageable != null && targetDamageable.IsAlive)
@@ -101,7 +177,9 @@ namespace SystemicOverload.Combat
 
             if (hitFxPrefab != null)
             {
-                Quaternion rotation = Quaternion.LookRotation(hitInfo.normal);
+                Quaternion rotation = hitInfo.normal.sqrMagnitude > 0.0001f
+                    ? Quaternion.LookRotation(hitInfo.normal)
+                    : Quaternion.identity;
                 Instantiate(hitFxPrefab, hitInfo.point, rotation);
             }
 

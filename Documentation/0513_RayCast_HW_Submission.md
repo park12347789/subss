@@ -23,7 +23,7 @@
 - Attack
   - Left click: ranged hit-scan damage through `CombatComponent`.
   - `F`: melee overlap attack through `TpsMeleeAttackComponent`.
-  - `Q`: ranged magic sphere cast through `TpsMagicSphereCastComponent`.
+  - `Q`: visible round magic projectile through `TpsMagicSphereCastComponent` and `MagicProjectileComponent`.
   - `R`: ground raycast AOE through `TpsGroundAoeSkillComponent`.
   - Three scene enemies use `HealthComponent`, `IDamageable`, and `DestroyOnDeathComponent`.
   - Enemy objects are destroyed when HP reaches 0.
@@ -47,6 +47,7 @@
 - Interface scripts start with `I`: `IInteractable`, `IDamageable`, `IAttackFeedback`.
 - Interaction, combat, movement, and raycast scripts are separated by folder and responsibility.
 - Scene wiring is authored in `Raycast.unity`: player, interaction targets, three enemy dummies, attack point, camera references, and layer masks.
+- `MagicProjectile.prefab` is wired to the player magic component and spawns from `PlayerArmature/AttackPoint`.
 - `AttackAnimationFeedback` is wired to the `PlayerArmature` Animator and `PlayerArmature/Geometry` animated root.
 - `StarterAssetsThirdPerson.controller` keeps `Idle Walk Run Blend` as the Base Layer default state and adds four downloaded attack states through Any State trigger transitions.
 - `PlayerArmature` is on the `Player` layer, enemy dummies are on `Enemy`, NPC/chest are on `Interactable`, wall targets are on `Obstacle`, and the floor is on `Ground`.
