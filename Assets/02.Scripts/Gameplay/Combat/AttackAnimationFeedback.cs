@@ -10,7 +10,7 @@ namespace SystemicOverload.Combat
         private const string MagicTriggerName = "AttackMagicTrig";
         private const string AreaTriggerName = "AttackAreaTrig";
 
-        [Header("Clip Motion")]
+        [Header("Clip Fallback")]
         [SerializeField] private AnimationClip rangedClip;
         [SerializeField] private AnimationClip meleeClip;
         [SerializeField] private AnimationClip magicClip;
@@ -53,12 +53,12 @@ namespace SystemicOverload.Combat
 
         public void PlayAttackFeedback(AttackFeedbackKind feedbackKind)
         {
-            if (TryPlayClip(feedbackKind))
+            if (TrySetAnimatorTrigger(feedbackKind))
             {
                 return;
             }
 
-            if (TrySetAnimatorTrigger(feedbackKind))
+            if (TryPlayClip(feedbackKind))
             {
                 return;
             }

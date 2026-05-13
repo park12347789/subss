@@ -30,10 +30,16 @@
 
 - Animation
   - Existing player prefab keeps the Starter Assets locomotion animator.
-  - Added authored attack clips under `Assets/01.Scenes/Raycast/Animations/Attacks`.
-  - `AttackAnimationFeedback` samples the authored attack clips in `LateUpdate` so the base Idle/Walk/Run Animator stays untouched.
+  - Imported Quaternius Universal Animation Library Standard under `Assets/04.ThirdParty/Quaternius/UniversalAnimationLibrary`.
+  - The imported motion pack is CC0 and includes Unity-ready Humanoid clips for retargeting.
+  - Attack motions are connected on the Base Layer only through trigger states:
+    - Left click/ranged: `Rig|Pistol_Shoot`
+    - `F` melee: `Rig|Sword_Attack`
+    - `Q` magic: `Rig|Spell_Simple_Shoot`
+    - `R` area attack: `Rig|Punch_Cross`
+  - `AttackAnimationFeedback` triggers the Animator first so imported Humanoid clips play through Mecanim retargeting.
   - The attempted `Attack Motion` Animator overlay layer was removed because it overrode the base idle pose.
-  - `AttackAnimationFeedback` still keeps the old transform pulse as a fallback if clip references are missing.
+  - Scene clip fallback references are cleared; `AttackAnimationFeedback` still keeps the old transform pulse as a final fallback if Animator trigger setup is missing.
   - `IAttackFeedback` keeps attack feedback decoupled from the damage components.
 
 ## Structure Check
@@ -41,7 +47,8 @@
 - Interface scripts start with `I`: `IInteractable`, `IDamageable`, `IAttackFeedback`.
 - Interaction, combat, movement, and raycast scripts are separated by folder and responsibility.
 - Scene wiring is authored in `Raycast.unity`: player, interaction targets, three enemy dummies, attack point, camera references, and layer masks.
-- `AttackAnimationFeedback` is wired to the scene attack clips, `PlayerArmature` Animator, and `PlayerArmature/Geometry` animated root.
+- `AttackAnimationFeedback` is wired to the `PlayerArmature` Animator and `PlayerArmature/Geometry` animated root.
+- `StarterAssetsThirdPerson.controller` keeps `Idle Walk Run Blend` as the Base Layer default state and adds four downloaded attack states through Any State trigger transitions.
 - `PlayerArmature` is on the `Player` layer, enemy dummies are on `Enemy`, NPC/chest are on `Interactable`, wall targets are on `Obstacle`, and the floor is on `Ground`.
 - `ThirdPersonController.GroundLayers` includes both `Default` and `Ground` to preserve TPS movement after the floor layer cleanup.
 
@@ -61,5 +68,6 @@ Unity Editor live play verification was not performed in this environment. Verif
 
 - Replaced the heavy unity-chan sample import path with a lightweight CC0 Kenney character asset pack.
 - Imported the model, idle/run/jump animation FBX files, four skin PNG files, and matching URP Lit materials under `Assets/04.ThirdParty/Kenney/AnimatedCharacters1`.
+- Imported Quaternius Universal Animation Library Standard from OpenGameArt/itch.io under `Assets/04.ThirdParty/Quaternius/UniversalAnimationLibrary` for proper CC0 Humanoid attack motions.
 - Removed the duplicated StarterAssets tutorial `Readme` folder that conflicted with the project-level tutorial `Readme` script.
 - Cleared stale baked `LightingData` references from `TPS_Base.unity` and `Raycast.unity` so Unity can regenerate lighting cleanly for the current editor version.
