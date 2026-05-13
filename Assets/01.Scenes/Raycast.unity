@@ -308,6 +308,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d0179d9bcc6d4a8685fae95a5187ef27, type: 3}
+--- !u!1001 &425045064
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 100000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_Name
+      value: Enemy_Dummy_Far
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 9.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
 --- !u!1 &505702789
 GameObject:
   m_ObjectHideFlags: 0
@@ -387,7 +444,7 @@ GameObject:
   - component: {fileID: 697948585}
   - component: {fileID: 697948584}
   - component: {fileID: 697948583}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -500,8 +557,8 @@ GameObject:
   - component: {fileID: 728270572}
   - component: {fileID: 728270571}
   - component: {fileID: 728270570}
-  m_Layer: 7
-  m_Name: Cube (2)
+  m_Layer: 10
+  m_Name: Wall_Obstacle_03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -657,6 +714,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21ecf5ef16ef478c9864ec2c9d2ef4c5, type: 3}
+--- !u!1001 &1154753795
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 100000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_Name
+      value: Enemy_Dummy_Close
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 4.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 5.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 400000000000000001, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 51d4d1cd46b34ea0a27f6257a744a0f6, type: 3}
 --- !u!1 &1160234425
 GameObject:
   m_ObjectHideFlags: 0
@@ -890,7 +1004,7 @@ MonoBehaviour:
   m_cam: {fileID: 0}
   m_hittableMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 1280
   m_maxDistance: 100
   m_aimDirectionMode: 1
   m_forwardRayOriginHeight: 1.2
@@ -1084,8 +1198,8 @@ GameObject:
   - component: {fileID: 1912275897}
   - component: {fileID: 1912275896}
   - component: {fileID: 1912275895}
-  m_Layer: 7
-  m_Name: Cube (1)
+  m_Layer: 10
+  m_Name: Wall_Obstacle_02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1196,8 +1310,8 @@ GameObject:
   - component: {fileID: 2064175021}
   - component: {fileID: 2064175020}
   - component: {fileID: 2064175019}
-  m_Layer: 7
-  m_Name: Cube
+  m_Layer: 10
+  m_Name: Wall_Obstacle_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1610,6 +1724,10 @@ PrefabInstance:
       propertyPath: m_Actions
       value: 
       objectReference: {fileID: -944628639613478452, guid: ef7b62ed182a4f7469e83e99a35ff0ad, type: 3}
+    - target: {fileID: 4638663003495267898, guid: ce2863cea4501e84c80b28674cac30f0, type: 3}
+      propertyPath: GroundLayers.m_Bits
+      value: 2049
+      objectReference: {fileID: 0}
     - target: {fileID: 5678993047483104790, guid: ce2863cea4501e84c80b28674cac30f0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.606838
@@ -2687,3 +2805,5 @@ SceneRoots:
   - {fileID: 1567788776}
   - {fileID: 1029311228}
   - {fileID: 303441287}
+  - {fileID: 1154753795}
+  - {fileID: 425045064}

@@ -10,6 +10,7 @@
 
 - RayCast
   - `CenterRaycastShooter` keeps the class raycast demo.
+  - Its hittable mask now targets `Enemy` and `Obstacle`, so the demo ray excludes the player and can hit the authored wall targets.
   - `TpsRayInteractor` uses the camera center ray to find interactable objects.
   - `CombatComponent` uses a two-step camera-to-muzzle ray for ranged hit-scan attack.
 
@@ -24,7 +25,8 @@
   - `F`: melee overlap attack through `TpsMeleeAttackComponent`.
   - `Q`: ranged magic sphere cast through `TpsMagicSphereCastComponent`.
   - `R`: ground raycast AOE through `TpsGroundAoeSkillComponent`.
-  - Enemy dummy uses `HealthComponent` and `IDamageable`.
+  - Three scene enemies use `HealthComponent`, `IDamageable`, and `DestroyOnDeathComponent`.
+  - Enemy objects are destroyed when HP reaches 0.
 
 - Animation
   - Existing player prefab keeps the Starter Assets locomotion animator.
@@ -35,11 +37,21 @@
 
 - Interface scripts start with `I`: `IInteractable`, `IDamageable`, `IAttackFeedback`.
 - Interaction, combat, movement, and raycast scripts are separated by folder and responsibility.
-- Scene wiring is authored in `Raycast.unity`: player, interaction targets, enemy dummy, attack point, camera references, and layer masks.
+- Scene wiring is authored in `Raycast.unity`: player, interaction targets, three enemy dummies, attack point, camera references, and layer masks.
+- `PlayerArmature` is on the `Player` layer, enemy dummies are on `Enemy`, NPC/chest are on `Interactable`, wall targets are on `Obstacle`, and the floor is on `Ground`.
+- `ThirdPersonController.GroundLayers` includes both `Default` and `Ground` to preserve TPS movement after the floor layer cleanup.
 
 ## Verification Boundary
 
 Unity Editor live play verification was not performed in this environment. Verification was done by checking code structure, serialized scene/prefab references, layer masks, input actions, and build-scene configuration.
+
+## Final MCP Check
+
+- Active scene: `Assets/01.Scenes/Raycast.unity`.
+- C# compilation errors: 0.
+- Unity console errors: 0.
+- Scene missing references: 0.
+- Asset missing references: 0.
 
 ## Third Party Model Pass
 
