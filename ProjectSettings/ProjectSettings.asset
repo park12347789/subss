@@ -924,11 +924,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: 862905a8-b2f6-4acc-b726-1fadbf033d4d
+  cloudProjectId: 0aec51fa-d21e-4d04-b3f1-f2580ec395dd
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 3D_Base
-  organizationId: jihyun-3961663
+  projectName: My project (3) 2026-05-05_14-44-41
+  organizationId: hansola1234
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}

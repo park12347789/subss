@@ -1,7 +1,6 @@
 using SystemicOverload.Combat;
 using SystemicOverload.Interaction;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace SystemicOverload.Phase1
 {
@@ -16,22 +15,7 @@ namespace SystemicOverload.Phase1
             InputProvider playerInputProvider = Object.FindFirstObjectByType<InputProvider>();
             if (playerInputProvider == null)
             {
-                PlayerInput playerInput = Object.FindFirstObjectByType<PlayerInput>();
-                if (playerInput == null)
-                {
-                    return;
-                }
-
-                playerInputProvider = playerInput.GetComponent<InputProvider>();
-                if (playerInputProvider == null)
-                {
-                    playerInputProvider = playerInput.gameObject.AddComponent<InputProvider>();
-                }
-
-                if (playerInput.actions != null)
-                {
-                    playerInputProvider.SetInputActionsAsset(playerInput.actions);
-                }
+                return;
             }
 
             GameObject playerObject = playerInputProvider.gameObject;

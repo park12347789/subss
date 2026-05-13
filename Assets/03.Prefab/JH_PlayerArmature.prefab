@@ -619,6 +619,7 @@ GameObject:
   - component: {fileID: 589498269453493369}
   - component: {fileID: 4369028122229554029}
   - component: {fileID: 3276292022716107655}
+  - component: {fileID: 6301774095011300001}
   m_Layer: 8
   m_Name: JH_PlayerArmature
   m_TagString: Player
@@ -786,7 +787,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Actions: {fileID: -944628639613478452, guid: 4419d82f33d36e848b3ed5af4c8da37e, type: 3}
+  m_Actions: {fileID: -944628639613478452, guid: ef7b62ed182a4f7469e83e99a35ff0ad, type: 3}
   m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
@@ -872,6 +873,24 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &6301774095011300001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2382042618217154365}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4db0ee03c6eab6c44aa58c3137f5f85d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SystemicOverload.Phase1.InputProvider
+  inputActionsAsset: {fileID: -944628639613478452, guid: ef7b62ed182a4f7469e83e99a35ff0ad, type: 3}
+  resourcesFallbackPath: 
+  normalizeDiagonalInput: 1
+  enableDualMouseForwardMove: 1
+  dualMouseForwardAmount: 1
+  gamepadLookDeadzone: 0.15
 --- !u!1 &2478324037704283075
 GameObject:
   m_ObjectHideFlags: 0
