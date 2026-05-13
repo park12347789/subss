@@ -21,7 +21,7 @@
   - `E` triggers interaction.
 
 - Attack
-  - Left click: ranged hit-scan damage through `CombatComponent`.
+  - Left click: visible ranged projectile from `AimMuzzlePoint` through `CombatComponent`.
   - `F`: melee overlap attack through `TpsMeleeAttackComponent`.
   - `Q`: visible round magic projectile through `TpsMagicSphereCastComponent` and `MagicProjectileComponent`.
   - `R`: ground raycast AOE through `TpsGroundAoeSkillComponent`.
@@ -47,7 +47,9 @@
 - Interface scripts start with `I`: `IInteractable`, `IDamageable`, `IAttackFeedback`.
 - Interaction, combat, movement, and raycast scripts are separated by folder and responsibility.
 - Scene wiring is authored in `Raycast.unity`: player, interaction targets, three enemy dummies, attack point, camera references, and layer masks.
-- `MagicProjectile.prefab` is wired to the player magic component and spawns from `PlayerArmature/AttackPoint`.
+- `AimReticleCanvas` provides a centered mouse aim point.
+- `PlayerFollowCamera` is tuned to a close right-shoulder aim view.
+- `AimMuzzlePoint` is placed near the player's right shoulder; both left-click projectile and `Q` magic projectile spawn from that point and travel toward the camera-center reticle ray.
 - `AttackAnimationFeedback` is wired to the `PlayerArmature` Animator and `PlayerArmature/Geometry` animated root.
 - `StarterAssetsThirdPerson.controller` keeps `Idle Walk Run Blend` as the Base Layer default state and adds four downloaded attack states through Any State trigger transitions.
 - `PlayerArmature` is on the `Player` layer, enemy dummies are on `Enemy`, NPC/chest are on `Interactable`, wall targets are on `Obstacle`, and the floor is on `Ground`.
