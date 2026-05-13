@@ -40,3 +40,10 @@
 ## Verification Boundary
 
 Unity Editor live play verification was not performed in this environment. Verification was done by checking code structure, serialized scene/prefab references, layer masks, input actions, and build-scene configuration.
+
+## Third Party Model Pass
+
+- Replaced the heavy unity-chan sample import path with a lightweight CC0 Kenney character asset pack.
+- Imported the model, idle/run/jump animation FBX files, four skin PNG files, and matching URP Lit materials under `Assets/04.ThirdParty/Kenney/AnimatedCharacters1`.
+- Removed the duplicated StarterAssets tutorial `Readme` folder that conflicted with the project-level tutorial `Readme` script.
+- Cleared stale baked `LightingData` references from `TPS_Base.unity` and `Raycast.unity` so Unity can regenerate lighting cleanly for the current editor version.
