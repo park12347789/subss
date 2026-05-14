@@ -620,7 +620,7 @@ GameObject:
   - component: {fileID: 4369028122229554029}
   - component: {fileID: 3276292022716107655}
   - component: {fileID: 6301774095011300001}
-  m_Layer: 8
+  m_Layer: 6
   m_Name: JH_PlayerArmature
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -733,7 +733,7 @@ MonoBehaviour:
   GroundedRadius: 0.28
   GroundLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 2049
   CinemachineCameraTarget: {fileID: 4710084249322466238}
   TopClamp: 70
   BottomClamp: -30

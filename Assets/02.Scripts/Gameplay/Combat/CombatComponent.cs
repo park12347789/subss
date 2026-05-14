@@ -22,6 +22,13 @@ namespace SystemicOverload.Combat
         [SerializeField] private float muzzleAimPaddingDistance = 0.1f;
         [SerializeField] private bool drawDebugRay = true;
 
+        [Header("Visible Projectile")]
+        [SerializeField] private GameObject projectilePrefab;
+        [SerializeField] private float projectileSpeed = 42.0f;
+        [SerializeField] private float projectileRadius = 0.08f;
+        [SerializeField] private float projectileLifetime = 1.2f;
+        [SerializeField] private GameObject hitFxPrefab;
+
         [Header("References")]
         [SerializeField] private MovementComponent movementComponent;
         [SerializeField] private Animator animator;
@@ -49,6 +56,9 @@ namespace SystemicOverload.Combat
             maxRange = Mathf.Max(0.1f, maxRange);
             cameraAimRayMaxDistance = Mathf.Max(0.1f, cameraAimRayMaxDistance);
             muzzleAimPaddingDistance = Mathf.Max(0.0f, muzzleAimPaddingDistance);
+            projectileSpeed = Mathf.Max(0.1f, projectileSpeed);
+            projectileRadius = Mathf.Max(0.01f, projectileRadius);
+            projectileLifetime = Mathf.Max(0.05f, projectileLifetime);
         }
 
         private void Update()
@@ -67,8 +77,14 @@ namespace SystemicOverload.Combat
             nextAllowedShotTime = Time.time + interval;
 
             TryFireHitScan();
-            attackFeedback?.PlayAttackFeedback(AttackFeedbackKind.Ranged);
-            TrySetAttackTrigger();
+            if (attackFeedback != null)
+            {
+                attackFeedback.PlayAttackFeedback(AttackFeedbackKind.Ranged);
+            }
+            else
+            {
+                TrySetAttackTrigger();
+            }
         }
 
         /// <summary>
@@ -104,12 +120,12 @@ namespace SystemicOverload.Combat
                 Debug.DrawRay(muzzleOrigin, step2Direction * step2Distance, Color.cyan, 0.2f);
             }
 
-            if (!Physics.Raycast(muzzleOrigin, step2Direction, out RaycastHit hitInfo, step2Distance, hitLayerMask, QueryTriggerInteraction.Ignore))
+            if (projectilePrefab != null && TryFireProjectile(muzzleOrigin, step2Direction))
             {
                 return;
             }
 
-            if (hitInfo.collider != null && hitInfo.collider.transform.IsChildOf(transform))
+            if (!TryRaycastExcludeSelf(muzzleOrigin, step2Direction, step2Distance, out RaycastHit hitInfo))
             {
                 return;
             }
@@ -153,7 +169,7 @@ namespace SystemicOverload.Combat
 
         private Vector3 ResolveCameraAimPoint(Ray cameraRay)
         {
-            if (Physics.Raycast(cameraRay, out RaycastHit cameraHit, cameraAimRayMaxDistance, hitLayerMask, QueryTriggerInteraction.Ignore))
+            if (TryRaycastExcludeSelf(cameraRay.origin, cameraRay.direction, cameraAimRayMaxDistance, out RaycastHit cameraHit))
             {
                 return cameraHit.point;
             }
@@ -169,6 +185,60 @@ namespace SystemicOverload.Combat
             }
 
             return transform.position + Vector3.up * rayOriginHeight + transform.forward * rayStartForwardOffset;
+        }
+
+        private bool TryFireProjectile(Vector3 origin, Vector3 direction)
+        {
+            GameObject projectileObject = Instantiate(projectilePrefab, origin, Quaternion.LookRotation(direction, Vector3.up));
+            MagicProjectileComponent projectile = projectileObject.GetComponent<MagicProjectileComponent>();
+            if (projectile == null)
+            {
+                Debug.LogWarning("Ranged projectile prefab is missing MagicProjectileComponent.", projectileObject);
+                Destroy(projectileObject);
+                return false;
+            }
+
+            projectile.Launch(
+                transform,
+                origin,
+                direction,
+                damage,
+                projectileSpeed,
+                projectileRadius,
+                projectileLifetime,
+                hitLayerMask,
+                hitFxPrefab);
+            return true;
+        }
+
+        private bool TryRaycastExcludeSelf(Vector3 origin, Vector3 direction, float distance, out RaycastHit bestHit)
+        {
+            RaycastHit[] hits = Physics.RaycastAll(origin, direction, distance, hitLayerMask, QueryTriggerInteraction.Ignore);
+            bestHit = default;
+            float bestDistance = float.MaxValue;
+            bool found = false;
+            for (int index = 0; index < hits.Length; index++)
+            {
+                RaycastHit candidateHit = hits[index];
+                if (candidateHit.collider == null)
+                {
+                    continue;
+                }
+
+                if (candidateHit.collider.transform.IsChildOf(transform))
+                {
+                    continue;
+                }
+
+                if (candidateHit.distance < bestDistance)
+                {
+                    bestDistance = candidateHit.distance;
+                    bestHit = candidateHit;
+                    found = true;
+                }
+            }
+
+            return found;
         }
 
         private void TrySetAttackTrigger()
